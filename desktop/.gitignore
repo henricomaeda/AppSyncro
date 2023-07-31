@@ -1,0 +1,26 @@
+# Byte-compiled / optimized files.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment.
+venv/
+env/
+*.env
+
+# Editor and IDE files.
+.vscode/
+*.vscode/
+*.idea/
+*.pyc
+*.pyo
+*.pyd
+
+# Miscellaneous.
+*.log
+*.swp
+*.swo
+*.bak
+*.pyc
+*.cache
