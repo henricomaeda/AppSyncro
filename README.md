@@ -1,2 +1,2 @@
-# AppSyncro
-AppSyncro is a mobile app that enables remote PC control from anywhere. Seamlessly manage your computer's functions using your phone. Stay connected and in control with this convenient and user-friendly app.
+# uRemotePC
+uRemotePC is a versatile solution that combines both a mobile app and desktop software, empowering users to control their PCs remotely. Stay connected and in control with this convenient and user-friendly app.
