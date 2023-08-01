@@ -86,6 +86,7 @@ class MainWindow(CTk, WindowBaseUtils):
         )
         # Header's container and its widgets.
         self.header_frm = CTkFrame(self, corner_radius=0, fg_color="#1f1f24")
+        self.bind("<Double-Button-1>", lambda e: self.toggle_zoomed())
         self.bind_motion(self.header_frm)
         self.title_lbl = CustomLabel(
             self.header_frm,

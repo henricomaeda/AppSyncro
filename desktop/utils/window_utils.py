@@ -63,6 +63,12 @@ class WindowMotionUtils:
 
 
 class WindowResizeUtils:
+    def toggle_zoomed(self):
+        if self.state() == "zoomed":
+            self.state("normal")
+        elif self.state() == "normal":
+            self.state("zoomed")
+
     def make_resizable(self):
         self._resize_state = 0
         self._resizing_state = False
