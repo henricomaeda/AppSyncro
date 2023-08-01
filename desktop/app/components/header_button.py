@@ -16,6 +16,7 @@ class HeaderButton(CTkButton):
         self.text_color = self._text_color
         self.bind("<Enter>", lambda e: self.on_enter())
         self.bind("<Leave>", lambda e: self.on_leave())
+        self.configure(cursor="")
 
     def on_enter(self):
         self.configure(fg_color=self._hover_color, text_color="white")
