@@ -25,11 +25,22 @@ class ClientConnection:
                     self.send_data("Access denied.")
                     raise error("Access denied.")
             self.send_data("Access granted.")
-            while self.running:
+            data = ""
+            while self.running and isinstance(data, str):
+                commands = []
                 data = self.get_data()
-                if isinstance(data, str):
-                    self.response_handler(data, "{}:{}".format(*self.address))
-                    self.handle_command(data)
+                if data:
+                    continue
+                if "\n" in data:
+                    commands.extend(data.split("\n"))
+                else:
+                    commands.append(data)
+                for command in commands:
+                    cmd = str(command).strip()
+                    if not cmd:
+                        continue
+                    self.response_handler(cmd, "{}:{}".format(*self.address))
+                    self.handle_command(cmd)
         except (timeout, error):
             pass
         except Exception as e:
