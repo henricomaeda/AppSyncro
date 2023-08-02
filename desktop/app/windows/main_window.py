@@ -141,9 +141,9 @@ class MainWindow(CTk, WindowBaseUtils):
             password = self.password_ent.get().strip()
             max_conn = self.max_connections_ent.get().strip()
             if not port.isdigit():
-                raise ValueError("Port must be a integer.")
+                raise ValueError("Port must be a valid integer.")
             elif not max_conn.isdigit():
-                raise ValueError("Max connections must be a integer.")
+                raise ValueError("Max connections must be a valid integer.")
             Thread(target=self.socket_server.start, args=(
                 host,
                 int(port),
