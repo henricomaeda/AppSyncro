@@ -13,7 +13,7 @@ from PIL import Image
 class MainWindow(CTk, WindowBaseUtils):
     def __init__(self, title: str = "Main Application", **resources) -> None:
         super().__init__(fg_color="white", **resources)
-        self.socket_server = SocketServer()
+        self.socket_server = SocketServer(self.handle_response)
         self.last_response = None
         self.title(title.strip())
         self.initialize_window()
@@ -33,7 +33,9 @@ class MainWindow(CTk, WindowBaseUtils):
         self.center_window(width=900, height=700)
 
     def configure_image(self) -> None:
-        image_path = "app/images/logo.png"
+        file_path = os.path.abspath(__file__)
+        folder_path = os.path.dirname(os.path.dirname(file_path))
+        image_path = os.path.join(folder_path, "images", "logo.png")
         if not exists(image_path):
             raise FileNotFoundError("Image file not found.")
         icon_path = convert_to_icon(image_path)
@@ -86,7 +88,6 @@ class MainWindow(CTk, WindowBaseUtils):
         )
         # Header's container and its widgets.
         self.header_frm = CTkFrame(self, corner_radius=0, fg_color="#1f1f24")
-        self.bind("<Double-Button-1>", lambda e: self.toggle_zoomed())
         self.bind_motion(self.header_frm)
         self.title_lbl = CustomLabel(
             self.header_frm,
@@ -132,10 +133,30 @@ class MainWindow(CTk, WindowBaseUtils):
         self.response_frm.pack(expand=True, fill=BOTH, side=BOTTOM)
 
     def start_server(self) -> None:
-        pass
+        try:
+            host = self.host_ent.get().strip()
+            port = self.port_ent.get().strip()
+            password = self.password_ent.get().strip()
+            max_conn = self.max_connections_ent.get().strip()
+            if not port.isdigit():
+                raise ValueError("Port must be a integer.")
+            elif not max_conn.isdigit():
+                raise ValueError("Max connections must be a integer.")
+            Thread(target=self.socket_server.start, args=(
+                host,
+                int(port),
+                password,
+                max(int(max_conn), 0)
+            )).start()
+        except Exception as e:
+            self.handle_response(f"Failed to start server: {e}")
 
     def stop_server(self) -> None:
-        pass
+        try:
+            thread = Thread(target=self.socket_server.stop)
+            thread.start()
+        except Exception as e:
+            self.handle_response(f"Failed to stop server: {e}")
 
     def handle_response(self, response: str, sender: str = "Localhost") -> None:
         try:
