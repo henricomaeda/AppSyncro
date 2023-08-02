@@ -6,6 +6,7 @@ from server.socket_server import SocketServer
 from threading import Thread
 from customtkinter import *
 from os.path import exists
+from tkinter import Event
 from time import sleep
 from PIL import Image
 
@@ -14,6 +15,7 @@ class MainWindow(CTk, WindowBaseUtils):
     def __init__(self, title: str = "Main Application", **resources) -> None:
         super().__init__(fg_color="white", **resources)
         self.socket_server = SocketServer(self.handle_response)
+        self.bind("<Destroy>", self.close_window)
         self.last_response = None
         self.title(title.strip())
         self.initialize_window()
@@ -103,7 +105,7 @@ class MainWindow(CTk, WindowBaseUtils):
             self.header_frm,
             hover_color="#B22222",
             text="✕",
-            command=self.quit
+            command=self.close_window
         )
         # Response's container and its widgets.
         self.response_frm = CTkScrollableFrame(
@@ -157,6 +159,14 @@ class MainWindow(CTk, WindowBaseUtils):
             thread.start()
         except Exception as e:
             self.handle_response(f"Failed to stop server: {e}")
+
+    def close_window(self, event: Event = None):
+        for connection in self.socket_server.connections:
+            connection.disconnect()
+        if self.socket_server.server_socket:
+            self.socket_server.server_socket.close()
+        if not event:
+            self.destroy()
 
     def handle_response(self, response: str, sender: str = "Localhost") -> None:
         try:
