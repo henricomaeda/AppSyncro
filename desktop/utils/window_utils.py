@@ -43,10 +43,17 @@ class WindowStyleUtils:
 
 
 class WindowMotionUtils:
+    def toggle_zoomed(self, event: Event):
+        if self.state() == "zoomed":
+            self.state("normal")
+        elif self.state() == "normal":
+            self.state("zoomed")
+
     def bind_motion(self, widget: Widget):
         widget.bind("<ButtonPress-1>", self.start_move)
         widget.bind("<B1-Motion>", self.on_move)
-        widget.bind("<ButtonRelease-1>", lambda e: self.stop_move())
+        widget.bind("<ButtonRelease-1>", self.stop_move)
+        widget.bind("<Double-Button-1>", self.toggle_zoomed)
 
     def start_move(self, event: Event):
         self.mouse_x = event.x
@@ -57,18 +64,12 @@ class WindowMotionUtils:
         y = self.winfo_y() + (event.y - self.mouse_y)
         self.geometry(f"+{x}+{y}")
 
-    def stop_move(self):
+    def stop_move(self, event: Event):
         self.mouse_x = None
         self.mouse_y = None
 
 
 class WindowResizeUtils:
-    def toggle_zoomed(self):
-        if self.state() == "zoomed":
-            self.state("normal")
-        elif self.state() == "normal":
-            self.state("zoomed")
-
     def make_resizable(self):
         self._resize_state = 0
         self._resizing_state = False
