@@ -1,11 +1,11 @@
-from socket import socket, error, timeout, SO_REUSEADDR, SOCK_STREAM, SOCK_DGRAM, SOL_SOCKET, SHUT_RDWR, AF_INET
+from socket import socket, error, timeout, SOCK_STREAM, SOCK_DGRAM, AF_INET
 from concurrent.futures import ThreadPoolExecutor
 from .client_connection import ClientConnection
 from random import randint
 from re import match
 
 
-class SocketServer(socket):
+class SocketServer:
     @staticmethod
     def get_private_ip():
         try:
@@ -35,8 +35,8 @@ class SocketServer(socket):
         return isinstance(port, int) and 1024 <= port <= 65535
 
     def __init__(self, response_handler: callable = None):
-        super().__init__(AF_INET, SOCK_STREAM)
         self.response_handler = response_handler
+        self.server_socket = None
         self.connections = []
         self.running = False
 
@@ -48,14 +48,14 @@ class SocketServer(socket):
                 raise ValueError("Invalid host IP address.")
             elif not self.is_valid_port(port):
                 raise ValueError("Invalid port number.")
-            self.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-            self.bind((host, port))
-            self.listen(max_connections)
+            self.server_socket = socket(AF_INET, SOCK_STREAM)
+            self.server_socket.bind((host, port))
+            self.server_socket.listen(max_connections)
             self.running = True
             self.response_handler(f"Server listening on {host}:{port}.")
             with ThreadPoolExecutor(max_connections) as executor:
                 while self.running:
-                    client_socket, client_address = self.accept()
+                    client_socket, client_address = self.server_socket.accept()
                     connection = ClientConnection(
                         client_socket,
                         client_address,
@@ -66,7 +66,7 @@ class SocketServer(socket):
         except (error, timeout):
             pass
         except Exception as e:
-            self.response_handler(f"Failed to start/handle server: {e}")
+            self.response_handler(f"Failed to handle server: {e}")
 
     def stop(self):
         try:
@@ -74,12 +74,10 @@ class SocketServer(socket):
                 raise RuntimeError("Server is not running!")
             for connection in self.connections:
                 connection.disconnect()
+            self.server_socket.close()
             self.running = False
-            self.shutdown(SHUT_RDWR)
             self.response_handler("Server was closed.")
         except (error, timeout):
             pass
         except Exception as e:
             self.response_handler(f"Failed to shutdown server: {e}")
-        finally:
-            self.close()

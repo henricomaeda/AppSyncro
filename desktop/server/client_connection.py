@@ -1,4 +1,4 @@
-from socket import socket, error, timeout, SHUT_RDWR
+from socket import socket, error, timeout
 
 BUFFER_SIZE = 1024
 
@@ -62,8 +62,9 @@ class ClientConnection:
     def disconnect(self) -> None:
         try:
             self.running = False
-            self.socket.shutdown(SHUT_RDWR)
+            ip, port = self.address
+            self.response_handler(f"{ip}:{port} was disconnected.")
+        except (error, timeout):
+            pass
         finally:
-            IP, PORT = self.address
-            self.response_handler(f"{IP}:{PORT} was disconnected.")
             self.socket.close()
