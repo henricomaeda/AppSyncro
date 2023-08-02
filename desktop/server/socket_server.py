@@ -48,6 +48,8 @@ class SocketServer:
                 raise ValueError("Invalid host IP address.")
             elif not self.is_valid_port(port):
                 raise ValueError("Invalid port number.")
+            elif max_connections <= 0:
+                raise ValueError("Max connections must be higher than 0.")
             self.server_socket = socket(AF_INET, SOCK_STREAM)
             self.server_socket.bind((host, port))
             self.server_socket.listen(max_connections)

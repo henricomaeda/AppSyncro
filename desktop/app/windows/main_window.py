@@ -148,7 +148,7 @@ class MainWindow(CTk, WindowBaseUtils):
                 host,
                 int(port),
                 password,
-                max(int(max_conn), 0)
+                int(max_conn)
             )).start()
         except Exception as e:
             self.handle_response(f"Failed to start server: {e}")
