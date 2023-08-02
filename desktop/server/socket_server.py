@@ -68,16 +68,18 @@ class SocketServer:
         except Exception as e:
             self.response_handler(f"Failed to handle server: {e}")
 
-    def stop(self):
+    def stop(self, handle_response: bool = True):
         try:
-            if not self.running:
+            if handle_response and not self.running:
                 raise RuntimeError("Server is not running!")
             for connection in self.connections:
                 connection.disconnect()
             self.server_socket.close()
             self.running = False
-            self.response_handler("Server was closed.")
+            if handle_response:
+                self.response_handler("Server was closed.")
         except (error, timeout):
             pass
         except Exception as e:
-            self.response_handler(f"Failed to shutdown server: {e}")
+            if handle_response:
+                self.response_handler(f"Failed to shutdown server: {e}")
