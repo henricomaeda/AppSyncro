@@ -119,8 +119,8 @@ class WindowResizeUtils:
                 elif self._resize_state in [7, 8]:
                     cursor_state = CURSOR_MAP[3]
             self.config(cursor=cursor_state.strip())
-        except Exception as e:
-            print(f"Failed to update resize or mouse state: {e}")
+        except:
+            pass
 
     def start_resize(self, event: Event):
         try:
@@ -136,8 +136,8 @@ class WindowResizeUtils:
             self.mouse_y = self.winfo_pointery() - self.window_y
             self.window_width = self.winfo_width()
             self.window_height = self.winfo_height()
-        except Exception as e:
-            print(f"Failed to start resizing window: {e}")
+        except:
+            pass
 
     def on_resize(self, event: Event):
         try:
@@ -202,16 +202,16 @@ class WindowResizeUtils:
                 new_height = window_height
                 new_y = window_y
             self.geometry(f"{new_width}x{new_height}+{new_x}+{new_y}")
-        except Exception as e:
-            print(f"Failed to resize window: {e}")
+        except:
+            pass
 
     def stop_resize(self, event: Event):
         try:
             self._resizing_state = False
             self._resize_state = 0
             self.config(cursor="")
-        except Exception as e:
-            print(f"Failed to stop resizing window: {e}")
+        except:
+            pass
 
 
 class WindowBaseUtils(WindowStyleUtils, WindowMotionUtils, WindowResizeUtils):
