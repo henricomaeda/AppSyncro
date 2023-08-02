@@ -1,3 +1,4 @@
+from os.path import splitext, split, join
 from PIL import Image
 
 
@@ -5,9 +6,9 @@ def convert_to_icon(image_path: str) -> (str | None):
     try:
         image = Image.open(image_path)
         image = image.convert("RGBA")
-        folder_path, file_name_with_ext = image_path.rsplit("/", 1)
-        file_name, _ = file_name_with_ext.rsplit(".", 1)
-        icon_path = f"{folder_path}/{file_name}.ico"
+        folder_path, filename_with_extension = split(image_path)
+        filename, _ = splitext(filename_with_extension)
+        icon_path = join(folder_path, f"{filename}.ico")
         image.save(icon_path, format="ICO")
         return icon_path
     except Exception as e:
