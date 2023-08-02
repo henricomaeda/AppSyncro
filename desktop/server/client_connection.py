@@ -1,13 +1,10 @@
 from socket import socket, error, timeout
+from .commands import handle_command
 
 BUFFER_SIZE = 1024
 
 
 class ClientConnection:
-    @staticmethod
-    def handle_command(command: str) -> None:
-        pass
-
     def __init__(self, client_socket: socket, client_address: str, response_handler: callable) -> None:
         self.socket = client_socket
         self.address = client_address
@@ -25,12 +22,11 @@ class ClientConnection:
                     self.send_data("Access denied.")
                     raise error("Access denied.")
             self.send_data("Access granted.")
-            data = ""
-            while self.running and isinstance(data, str):
+            while self.running:
                 commands = []
                 data = self.get_data()
-                if data:
-                    continue
+                if data is None:
+                    break
                 if "\n" in data:
                     commands.extend(data.split("\n"))
                 else:
@@ -40,7 +36,7 @@ class ClientConnection:
                     if not cmd:
                         continue
                     self.response_handler(cmd, "{}:{}".format(*self.address))
-                    self.handle_command(cmd)
+                    handle_command(cmd)
         except (timeout, error):
             pass
         except Exception as e:
