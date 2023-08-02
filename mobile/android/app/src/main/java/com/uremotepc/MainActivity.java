@@ -1,8 +1,10 @@
 package com.uremotepc;
-
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+
+// React navigation required statement.
+import android.os.Bundle;
 
 public class MainActivity extends ReactActivity {
   // React navigation configuration.
