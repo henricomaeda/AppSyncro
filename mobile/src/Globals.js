@@ -1,5 +1,5 @@
+import { name as appName } from "../app.json";
 import { Dimensions } from "react-native";
-import { appName } from "../index";
 
 const window = Dimensions.get("window");
 export const globals = {
