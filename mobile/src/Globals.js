@@ -10,11 +10,12 @@ export const globals = {
     },
     colors: {
         tint: "#ffffff",
-        primary: "#6699ff",
-        secondary: "#6666ff",
+        primary: "#457dff",
+        secondary: "#dd45ff",
         placeholder: "#cccccc",
         foreground: "#2a2a30",
         midground: "#1f1f24",
-        background: "#151518"
+        background: "#151518",
+        error: "#f23c34"
     }
 };
