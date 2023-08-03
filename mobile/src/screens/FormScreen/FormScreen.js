@@ -9,9 +9,9 @@ import {
     View,
     Text
 } from "react-native";
+import { globals } from "../../Globals";
 import styles from "./FormScreenStyles";
 import Exception from "../../components/Exception/Exception";
-import { globals } from "../../Globals";
 
 const FormScreen = ({ navigation }) => {
     const [ip, setIp] = useState("127.0.0.1");
@@ -36,7 +36,7 @@ const FormScreen = ({ navigation }) => {
         else {
             setPortException("");
             return true;
-        }
+        };
         return false;
     };
 
@@ -67,74 +67,28 @@ const FormScreen = ({ navigation }) => {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 pointerEvents="none"
-                style={{
-                    borderRadius: Math.round(globals.window.width + globals.window.height) / 2,
-                    height: globals.window.width * 1.2,
-                    width: globals.window.width * 1.2,
-                    left: -globals.window.width / 3,
-                    top: -globals.window.width / 5,
-                    position: "absolute",
-                    elevation: 10
-                }}
+                style={styles.backgroundCircle}
             />
-            <ScrollView
-                contentContainerStyle={{
-                    paddingHorizontal: globals.window.width / 30,
-                    paddingVertical: globals.window.width / 10,
-                    justifyContent: "center",
-                    flexGrow: 1,
-                }}>
-                <View
-                    style={{
-                        marginBottom: globals.window.width / 16,
-                        alignItems: "center"
-                    }}>
+            <ScrollView contentContainerStyle={styles.container}>
+                <View style={styles.headerContainer}>
                     <LinearGradient
                         colors={[globals.colors.primary, globals.colors.secondary]}
                         start={{ x: 1, y: 1 }}
                         end={{ x: 0, y: 0 }}
-                        style={{
-                            borderRadius: Math.round(globals.window.width + globals.window.height) / 2,
-                            padding: globals.window.width / 16,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            overflow: "hidden",
-                            elevation: 10
-                        }}>
+                        style={styles.imageBackground}>
                         <Image
                             source={require("../../assets/images/icon.png")}
-                            style={{
-                                height: globals.window.width / 3.6,
-                                width: globals.window.width / 3.6,
-                            }}
+                            style={styles.image}
                         />
                     </LinearGradient>
-                    <Text
-                        style={{
-                            marginTop: globals.window.width / 30,
-                            fontSize: globals.window.width / 18,
-                            color: globals.colors.tint,
-                            fontWeight: "bold",
-                            elevation: 6
-                        }}>
+                    <Text style={styles.title}>
                         {globals.appName}
                     </Text>
-                    <Text
-                        style={{
-                            fontSize: globals.window.width / 22,
-                            color: globals.colors.tint
-                        }}>
+                    <Text style={styles.subtitle}>
                         Connect to a computer remotely!
                     </Text>
                 </View>
-                <View
-                    style={{
-                        borderTopRightRadius: globals.window.width / 42,
-                        borderTopLeftRadius: globals.window.width / 42,
-                        paddingHorizontal: globals.window.width / 36,
-                        paddingVertical: globals.window.width / 10,
-                        backgroundColor: "rgba(31, 31, 36, 0.826)"
-                    }}>
+                <View style={styles.formBackground}>
                     <Text style={[styles.label, { marginTop: 0 }]}>
                         Server IP
                     </Text>
@@ -179,13 +133,7 @@ const FormScreen = ({ navigation }) => {
                     />
                 </View>
             </ScrollView>
-            <View
-                style={{
-                    bottom: globals.window.width / 20,
-                    right: globals.window.width / 20,
-                    alignItems: "center",
-                    position: "absolute"
-                }}>
+            <View style={styles.floatContainer}>
                 <TouchableOpacity
                     onPress={() => redefine()}
                     style={[
