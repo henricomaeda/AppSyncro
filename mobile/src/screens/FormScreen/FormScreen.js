@@ -141,6 +141,7 @@ const FormScreen = ({ navigation }) => {
                     <TextInput
                         value={ip}
                         onBlur={validateIp}
+                        keyboardAppearance="dark"
                         onChangeText={(newIp) => setIp(newIp.trim())}
                         placeholder="Enter the server IP address e.g., 127.0.0.1"
                         placeholderTextColor={globals.colors.placeholder}
@@ -154,6 +155,7 @@ const FormScreen = ({ navigation }) => {
                     </Text>
                     <TextInput
                         onBlur={validatePort}
+                        keyboardAppearance="dark"
                         value={isNaN(port) ? "" : port.toString()}
                         onChangeText={(newPort) => setPort(parseInt(newPort.trim()))}
                         placeholderTextColor={globals.colors.placeholder}
@@ -168,6 +170,7 @@ const FormScreen = ({ navigation }) => {
                     </Text>
                     <TextInput
                         value={password}
+                        keyboardAppearance="dark"
                         onChangeText={(newPassword) => setPassword(newPassword.trim())}
                         placeholder="Enter the server password if it has one."
                         placeholderTextColor={globals.colors.placeholder}
