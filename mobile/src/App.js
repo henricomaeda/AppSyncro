@@ -2,8 +2,8 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 
-import FormScreen from "./screens/FormScreen";
-import MainScreen from "./screens/MainScreen";
+import FormScreen from "./screens/FormScreen/FormScreen";
+import MainScreen from "./screens/MainScreen/MainScreen";
 import { globals } from "./Globals";
 
 const Stack = createNativeStackNavigator();

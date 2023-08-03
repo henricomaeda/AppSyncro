@@ -3,7 +3,7 @@ import {
     ScrollView,
     Text
 } from "react-native";
-import { styles } from "./MainScreenStyles";
+import styles from "./MainScreenStyles";
 
 const MainScreen = ({ navigation, route }) => (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>

@@ -1,4 +1,4 @@
-import { styles } from "./ExceptionStyles";
+import styles from "./ExceptionStyles";
 import { Text } from "react-native";
 import React from "react";
 
