@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     },
     "entry": {
         paddingHorizontal: globals.window.width / 32,
-        backgroundColor: globals.colors.foreground,
+        backgroundColor: globals.colors.background,
         borderRadius: globals.window.width / 42,
         fontSize: globals.window.width / 26,
         color: globals.colors.tint
@@ -24,6 +24,15 @@ const styles = StyleSheet.create({
     "buttonText": {
         fontSize: globals.window.width / 22,
         color: globals.colors.tint
+    },
+    "floatButton": {
+        borderRadius: Math.round(globals.window.width + globals.window.height) / 2,
+        backgroundColor: globals.colors.foreground,
+        marginTop: globals.window.width / 32,
+        padding: globals.window.width / 36,
+        justifyContent: "center",
+        alignItems: "center",
+        elevation: 10
     }
 });
 

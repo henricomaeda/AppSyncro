@@ -1,9 +1,11 @@
+import Icon from "react-native-vector-icons/MaterialIcons";
 import LinearGradient from "react-native-linear-gradient";
 import React, { useState } from "react";
 import {
     TouchableOpacity,
     ScrollView,
     TextInput,
+    Image,
     View,
     Text
 } from "react-native";
@@ -11,7 +13,7 @@ import styles from "./FormScreenStyles";
 import Exception from "../../components/Exception/Exception";
 import { globals } from "../../Globals";
 
-const FormScreen = ({ navigation, route }) => {
+const FormScreen = ({ navigation }) => {
     const [ip, setIp] = useState("127.0.0.1");
     const [port, setPort] = useState(12345);
     const [password, setPassword] = useState("");
@@ -59,130 +61,158 @@ const FormScreen = ({ navigation, route }) => {
     };
 
     return (
-        <ScrollView
-            contentContainerStyle={{
-                padding: globals.window.width / 30,
-                justifyContent: "center",
-                flexGrow: 1,
-            }}>
+        <View style={{ flex: 1 }}>
             <LinearGradient
                 colors={[globals.colors.primary, globals.colors.secondary]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
+                pointerEvents="none"
                 style={{
                     borderRadius: Math.round(globals.window.width + globals.window.height) / 2,
                     height: globals.window.width * 1.2,
                     width: globals.window.width * 1.2,
                     left: -globals.window.width / 3,
                     top: -globals.window.width / 5,
-                    position: "absolute"
+                    position: "absolute",
+                    elevation: 10
                 }}
             />
-            <View
-                style={{
-                    marginHorizontal: globals.window.width / 46,
-                    marginVertical: globals.window.width / 20
+            <ScrollView
+                contentContainerStyle={{
+                    paddingHorizontal: globals.window.width / 30,
+                    paddingVertical: globals.window.width / 10,
+                    justifyContent: "center",
+                    flexGrow: 1,
                 }}>
-                <Text
+                <View
                     style={{
-                        fontSize: globals.window.width / 16,
-                        color: globals.colors.tint,
-                        fontWeight: "bold",
+                        marginBottom: globals.window.width / 16,
+                        alignItems: "center"
                     }}>
-                    {globals.appName}
-                </Text>
-                <Text
+                    <LinearGradient
+                        colors={[globals.colors.primary, globals.colors.secondary]}
+                        start={{ x: 1, y: 1 }}
+                        end={{ x: 0, y: 0 }}
+                        style={{
+                            borderRadius: Math.round(globals.window.width + globals.window.height) / 2,
+                            padding: globals.window.width / 16,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            overflow: "hidden",
+                            elevation: 10
+                        }}>
+                        <Image
+                            source={require("../../assets/images/icon.png")}
+                            style={{
+                                height: globals.window.width / 3.6,
+                                width: globals.window.width / 3.6,
+                            }}
+                        />
+                    </LinearGradient>
+                    <Text
+                        style={{
+                            marginTop: globals.window.width / 30,
+                            fontSize: globals.window.width / 18,
+                            color: globals.colors.tint,
+                            fontWeight: "bold",
+                            elevation: 6
+                        }}>
+                        {globals.appName}
+                    </Text>
+                    <Text
+                        style={{
+                            fontSize: globals.window.width / 22,
+                            color: globals.colors.tint
+                        }}>
+                        Connect to a computer remotely!
+                    </Text>
+                </View>
+                <View
                     style={{
-                        fontSize: globals.window.width / 20,
-                        color: globals.colors.tint
+                        borderTopRightRadius: globals.window.width / 42,
+                        borderTopLeftRadius: globals.window.width / 42,
+                        paddingHorizontal: globals.window.width / 36,
+                        paddingVertical: globals.window.width / 10,
+                        backgroundColor: "rgba(31, 31, 36, 0.826)"
                     }}>
-                    Connect to a computer host!
-                </Text>
-            </View>
+                    <Text style={[styles.label, { marginTop: 0 }]}>
+                        Server IP
+                    </Text>
+                    <TextInput
+                        value={ip}
+                        onBlur={validateIp}
+                        onChangeText={(newIp) => setIp(newIp.trim())}
+                        placeholder="Enter the server IP address e.g., 127.0.0.1"
+                        placeholderTextColor={globals.colors.placeholder}
+                        selectionColor={globals.colors.placeholder}
+                        keyboardType="numeric"
+                        style={styles.entry}
+                    />
+                    <Exception message={ipException} />
+                    <Text style={styles.label}>
+                        Server Port
+                    </Text>
+                    <TextInput
+                        onBlur={validatePort}
+                        value={isNaN(port) ? "" : port.toString()}
+                        onChangeText={(newPort) => setPort(parseInt(newPort.trim()))}
+                        placeholderTextColor={globals.colors.placeholder}
+                        placeholder="Enter the server port e.g., 12345"
+                        selectionColor={globals.colors.placeholder}
+                        keyboardType="numeric"
+                        style={styles.entry}
+                    />
+                    <Exception message={portException} />
+                    <Text style={styles.label}>
+                        Server Password
+                    </Text>
+                    <TextInput
+                        value={password}
+                        onChangeText={(newPassword) => setPassword(newPassword.trim())}
+                        placeholder="Enter the server password if it has one."
+                        placeholderTextColor={globals.colors.placeholder}
+                        selectionColor={globals.colors.placeholder}
+                        style={styles.entry}
+                    />
+                </View>
+            </ScrollView>
             <View
                 style={{
-                    borderTopRightRadius: globals.window.width / 42,
-                    borderTopLeftRadius: globals.window.width / 42,
-                    paddingHorizontal: globals.window.width / 36,
-                    backgroundColor: "rgba(31, 31, 36, 0.8)",
-                    paddingTop: globals.window.width / 10
-                }}>
-                <Text style={[styles.label, { marginTop: 0 }]}>
-                    Server IP
-                </Text>
-                <TextInput
-                    value={ip}
-                    onBlur={validateIp}
-                    onChangeText={(newIp) => setIp(newIp.trim())}
-                    placeholder="Enter the server IP address e.g., 127.0.0.1"
-                    placeholderTextColor={globals.colors.placeholder}
-                    selectionColor={globals.colors.placeholder}
-                    keyboardType="numeric"
-                    style={styles.entry}
-                />
-                <Exception message={ipException} />
-                <Text style={styles.label}>
-                    Server Port
-                </Text>
-                <TextInput
-                    onBlur={validatePort}
-                    value={isNaN(port) ? "" : port.toString()}
-                    onChangeText={(newPort) => setPort(parseInt(newPort.trim()))}
-                    placeholderTextColor={globals.colors.placeholder}
-                    placeholder="Enter the server port e.g., 12345"
-                    selectionColor={globals.colors.placeholder}
-                    keyboardType="numeric"
-                    style={styles.entry}
-                />
-                <Exception message={portException} />
-                <Text style={styles.label}>
-                    Server Password
-                </Text>
-                <TextInput
-                    value={password}
-                    onChangeText={(newPassword) => setPassword(newPassword.trim())}
-                    placeholder="Enter the server password if it has one."
-                    placeholderTextColor={globals.colors.placeholder}
-                    selectionColor={globals.colors.placeholder}
-                    style={styles.entry}
-                />
-            </View>
-            <View
-                style={{
-                    borderBottomRightRadius: globals.window.width / 42,
-                    borderBottomLeftRadius: globals.window.width / 42,
-                    backgroundColor: globals.colors.midground,
-                    paddingBottom: globals.window.width / 10,
-                    paddingTop: globals.window.width / 20,
-                    padding: globals.window.width / 26,
-                    justifyContent: "space-between",
-                    flexDirection: "row"
+                    bottom: globals.window.width / 20,
+                    right: globals.window.width / 20,
+                    alignItems: "center",
+                    position: "absolute"
                 }}>
                 <TouchableOpacity
-                    onPress={() => redefine()}>
-                    <LinearGradient
-                        colors={[globals.colors.primary, globals.colors.primary, globals.colors.secondary]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={styles.button}>
-                        <Text style={styles.buttonText}>
-                            Redefine
-                        </Text>
-                    </LinearGradient>
+                    onPress={() => redefine()}
+                    style={[
+                        styles.floatButton,
+                        { padding: globals.window.width / 30 }
+                    ]}>
+                    <Icon
+                        name="backspace"
+                        color={globals.colors.tint}
+                        size={globals.window.width / 20}
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => connect()}>
                     <LinearGradient
-                        colors={[globals.colors.secondary, globals.colors.secondary, globals.colors.primary]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={styles.button}>
-                        <Text style={styles.buttonText}>
-                            Connect
-                        </Text>
+                        colors={[globals.colors.primary, globals.colors.secondary]}
+                        start={{ x: 1, y: 1 }}
+                        end={{ x: 0, y: 0 }}
+                        style={[
+                            styles.floatButton,
+                            { backgroundColor: globals.colors.primary }
+                        ]}>
+                        <Icon
+                            name="settings-remote"
+                            color={globals.colors.tint}
+                            size={globals.window.width / 14}
+                        />
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
-        </ScrollView>
+        </View>
     );
 };
 
