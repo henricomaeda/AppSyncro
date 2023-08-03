@@ -5,12 +5,21 @@ import {
 } from "react-native";
 import styles from "./MainScreenStyles";
 
-const MainScreen = ({ navigation, route }) => (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <Text>
-            {route.name}
-        </Text>
-    </ScrollView>
-);
+const MainScreen = ({ navigation, route }) => {
+    const { serverIp, serverPort, serverPassword } = route.params;
+    return (
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Text>
+                Server IP: {serverIp}
+            </Text>
+            <Text>
+                Server Port: {serverPort}
+            </Text>
+            <Text>
+                Server Password: {serverPassword}
+            </Text>
+        </ScrollView>
+    )
+};
 
 export default MainScreen;
