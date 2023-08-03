@@ -1,5 +1,5 @@
-import { name as appName } from "../app.json";
 import { Dimensions } from "react-native";
+import { appName } from "../index";
 
 const window = Dimensions.get("window");
 export const globals = {
@@ -9,10 +9,12 @@ export const globals = {
         height: window.height
     },
     colors: {
-        background: "#121212",
-        midground: "#222222",
-        foreground: "#444444",
-        placeholder: "#AAAAAA",
-        tint: "#FFFFFF"
+        tint: "#ffffff",
+        primary: "#6699ff",
+        secondary: "#6666ff",
+        placeholder: "#cccccc",
+        foreground: "#2a2a30",
+        midground: "#1f1f24",
+        background: "#151518"
     }
 };
