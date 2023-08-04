@@ -7,7 +7,6 @@ from threading import Thread
 from customtkinter import *
 from os.path import exists
 from tkinter import Event
-from time import sleep
 from PIL import Image
 
 
@@ -15,6 +14,7 @@ class MainWindow(CTk, WindowBaseUtils):
     def __init__(self, title: str = "Main Application", **resources) -> None:
         super().__init__(fg_color="white", **resources)
         self.socket_server = SocketServer(self.handle_response)
+        self.wm_protocol("WM_DELETE_WINDOW", self.close_window)
         self.bind("<Destroy>", self.close_window)
         self.last_response = None
         self.title(title.strip())
@@ -31,8 +31,9 @@ class MainWindow(CTk, WindowBaseUtils):
         self.configure(padx=1, pady=1)
         self.hide_title_bar()
         self.make_resizable()
-        self.minsize(900, 700)
-        self.center_window(width=900, height=700)
+        width, height = 900, 700
+        self.minsize(width, height)
+        self.center_window(width, height)
 
     def configure_image(self) -> None:
         file_path = os.path.abspath(__file__)
@@ -105,10 +106,10 @@ class MainWindow(CTk, WindowBaseUtils):
             self.header_frm,
             hover_color="#B22222",
             text="✕",
-            command=self.close_window
+            command=self.quit
         )
         # Response's container and its widgets.
-        self.response_frm = CTkScrollableFrame(
+        self.responses_frm = CTkScrollableFrame(
             self,
             corner_radius=0,
             fg_color="#151518"
@@ -132,70 +133,73 @@ class MainWindow(CTk, WindowBaseUtils):
         self.minimize_btn.pack(side=LEFT)
         self.close_btn.pack(side=LEFT)
         # Response's container and its widgets.
-        self.response_frm.pack(expand=True, fill=BOTH, side=BOTTOM)
+        self.responses_frm.pack(expand=True, fill=BOTH, side=BOTTOM)
 
     def start_server(self) -> None:
-        try:
-            host = self.host_ent.get().strip()
-            port = self.port_ent.get().strip()
-            password = self.password_ent.get().strip()
-            max_conn = self.max_connections_ent.get().strip()
-            if not port.isdigit():
-                raise ValueError("Port must be a valid integer.")
-            elif not max_conn.isdigit():
-                raise ValueError("Max connections must be a valid integer.")
-            Thread(target=self.socket_server.start, args=(
-                host,
-                int(port),
-                password,
-                int(max_conn)
-            )).start()
-        except Exception as e:
-            self.handle_response(f"Failed to start server: {e}")
+        host = self.host_ent.get().strip()
+        port = self.port_ent.get().strip()
+        password = self.password_ent.get().strip()
+        max_connections = self.max_connections_ent.get().strip()
+        Thread(target=self.socket_server.start, args=(
+            host,
+            port,
+            password,
+            max_connections
+        )).start()
 
     def stop_server(self) -> None:
-        try:
-            thread = Thread(target=self.socket_server.stop)
-            thread.start()
-        except Exception as e:
-            self.handle_response(f"Failed to stop server: {e}")
+        Thread(target=self.socket_server.stop).start()
 
     def close_window(self, event: Event = None):
-        for connection in self.socket_server.connections:
-            connection.disconnect()
-        if self.socket_server.server_socket:
-            self.socket_server.server_socket.close()
-        if not event:
-            self.destroy()
+        try:
+            self.stop_server()
+            if not event and self.winfo_exists():
+                self.destroy()
+        except Exception as e:
+            print(f"Failed to close window: {e}")
 
     def handle_response(self, response: str, sender: str = "Localhost") -> None:
+        sender = str(sender).strip()
+        response = str(response).strip()
         try:
-            response = str(response).strip()
-            sender = str(sender).strip()
-            if self.last_response == response:
+            if not response or self.last_response is response:
                 return
+            elif not self.responses_frm.winfo_exists():
+                return
+            # Create the response frame.
+            response_frm = CTkFrame(self.responses_frm, fg_color="transparent")
+            response_frm.after(200, self.scroll_to_end)
+            # Create sender label.
             sender_lbl = CustomLabel(
-                self.response_frm,
+                response_frm,
+                text=sender,
                 corner_radius=12,
-                text=str(sender).strip(),
                 fg_color="#1c6ca4"
             )
-            sender_lbl.pack(anchor=W, padx=(10, 8), pady=(0, 6))
-            if not self.last_response:
-                sender_lbl.pack_configure(pady=(12, 6))
-            self.last_response = response
+            # Create response label.
             response_lbl = CustomLabel(
-                self.response_frm,
+                response_frm,
+                text=response,
                 corner_radius=12,
-                text=self.last_response,
                 fg_color="#2c2c34"
             )
-            response_lbl.pack(fill=X, padx=(10, 8), pady=(0, 12))
+            # Display the widgets.
+            sender_lbl.pack(anchor=W, pady=(0, 6))
+            if not self.last_response:
+                sender_lbl.pack_configure(pady=(12, 6))
+            response_lbl.pack(fill=X, pady=(0, 12))
+            response_frm.pack(fill=X, padx=(10, 8))
         except Exception as e:
             print(f"Failed to handle response: {e}")
         finally:
-            Thread(target=self.scroll_to_end).start()
+            self.last_response = response
 
     def scroll_to_end(self) -> None:
-        sleep(0.16)
-        self.response_frm._parent_canvas.yview_moveto(1.0)
+        try:
+            if not self.responses_frm.winfo_exists():
+                return
+            elif not self.responses_frm._parent_canvas.winfo_exists():
+                return
+            self.responses_frm._parent_canvas.yview_moveto(1.0)
+        except Exception as e:
+            print(f"Unable to scroll to end: {e}")
