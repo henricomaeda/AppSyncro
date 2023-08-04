@@ -2,7 +2,7 @@ from app.components.custom_entry import CustomEntry, CustomLabel
 from app.components.header_button import HeaderButton
 from utils.process_image import convert_to_icon
 from utils.window_utils import WindowBaseUtils
-from server.socket_server import SocketServer
+from utils.socket_server import SocketServer
 from threading import Thread
 from customtkinter import *
 from os.path import exists
