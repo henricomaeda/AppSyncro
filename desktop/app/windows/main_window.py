@@ -162,7 +162,7 @@ class MainWindow(CTk, WindowBaseUtils):
         sender = str(sender).strip()
         response = str(response).strip()
         try:
-            if not response or self.last_response is response:
+            if not response or self.last_response == response:
                 return
             elif not self.responses_frm.winfo_exists():
                 return
