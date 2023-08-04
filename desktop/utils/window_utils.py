@@ -43,44 +43,52 @@ class WindowStyleUtils:
 
 
 class WindowMotionUtils:
-    def toggle_zoomed(self, event: Event):
-        if self.state() == "zoomed":
-            self.state("normal")
-        elif self.state() == "normal":
-            self.state("zoomed")
-
     def bind_motion(self, widget: Widget):
         widget.bind("<ButtonPress-1>", self.start_move)
         widget.bind("<B1-Motion>", self.on_move)
-        widget.bind("<ButtonRelease-1>", self.stop_move)
-        widget.bind("<Double-Button-1>", self.toggle_zoomed)
+        widget.bind("<ButtonRelease-1>", lambda e: self.stop_move())
+        widget.bind("<Double-Button-1>", lambda e: self.toggle_zoomed())
+        self.is_moving = False
 
     def start_move(self, event: Event):
         self.mouse_x = event.x
         self.mouse_y = event.y
+        self.is_moving = True
 
     def on_move(self, event: Event):
-        x = self.winfo_x() + (event.x - self.mouse_x)
-        y = self.winfo_y() + (event.y - self.mouse_y)
-        self.geometry(f"+{x}+{y}")
+        try:
+            if self.is_moving:
+                x = self.winfo_x() + (event.x - self.mouse_x)
+                y = self.winfo_y() + (event.y - self.mouse_y)
+                self.geometry(f"+{x}+{y}")
+        except Exception as e:
+            print(f"Failed to move window: {e}")
 
-    def stop_move(self, event: Event):
+    def stop_move(self):
+        self.is_moving = False
         self.mouse_x = None
         self.mouse_y = None
+
+    def toggle_zoomed(self):
+        if self.state() == "zoomed":
+            self.state("normal")
+        elif self.state() == "normal":
+            self.state("zoomed")
+            self.is_moving = False
 
 
 class WindowResizeUtils:
     def make_resizable(self):
         self._resize_state = 0
         self._resizing_state = False
-        self.bind("<Motion>", self.update_state)
-        self.bind("<ButtonPress>", self.start_resize)
-        self.bind("<B1-Motion>", self.on_resize)
-        self.bind("<ButtonRelease>", self.stop_resize)
+        self.bind("<Motion>", lambda e: self.update_state())
+        self.bind("<ButtonPress>", lambda e: self.start_resize())
+        self.bind("<B1-Motion>", lambda e: self.on_resize())
+        self.bind("<ButtonRelease>", lambda e: self.stop_resize())
 
-    def update_state(self, event: Event):
+    def update_state(self):
         try:
-            if self._resizing_state:
+            if self._resizing_state or not self.winfo_exists():
                 return
             self._resize_state = 0
             cursor_state = ""
@@ -119,12 +127,12 @@ class WindowResizeUtils:
                 elif self._resize_state in [7, 8]:
                     cursor_state = CURSOR_MAP[3]
             self.config(cursor=cursor_state.strip())
-        except:
-            pass
+        except Exception as e:
+            print(f"Failed to update state: {e}")
 
-    def start_resize(self, event: Event):
+    def start_resize(self):
         try:
-            if not self.overrideredirect():
+            if not self.overrideredirect() or not self.winfo_exists():
                 return
             cursor_state = self.cget("cursor")
             if not cursor_state in CURSOR_MAP:
@@ -136,14 +144,16 @@ class WindowResizeUtils:
             self.mouse_y = self.winfo_pointery() - self.window_y
             self.window_width = self.winfo_width()
             self.window_height = self.winfo_height()
-        except:
-            pass
+        except Exception as e:
+            print(f"Failed to start resizing: {e}")
 
-    def on_resize(self, event: Event):
+    def on_resize(self):
         try:
             if not self._resizing_state:
                 return
-            if not self._resize_state:
+            elif not self._resize_state:
+                return
+            elif not self.winfo_exists():
                 return
             window_x = self.winfo_x()
             window_y = self.winfo_y()
@@ -202,16 +212,17 @@ class WindowResizeUtils:
                 new_height = window_height
                 new_y = window_y
             self.geometry(f"{new_width}x{new_height}+{new_x}+{new_y}")
-        except:
-            pass
+        except Exception as e:
+            print(f"Failed to resize window: {e}")
 
-    def stop_resize(self, event: Event):
+    def stop_resize(self):
         try:
             self._resizing_state = False
             self._resize_state = 0
-            self.config(cursor="")
-        except:
-            pass
+            if self.winfo_exists():
+                self.config(cursor="")
+        except Exception as e:
+            print(f"Failed to stop resizing: {e}")
 
 
 class WindowBaseUtils(WindowStyleUtils, WindowMotionUtils, WindowResizeUtils):
