@@ -92,8 +92,6 @@ class SocketServer:
             pass
         except Exception as e:
             self.response_handler(f"Unable to start server: {e}")
-            if self.running:
-                self.stop()
 
     def handle_client(self, client: socket, address: tuple, server_password: str) -> None:
         try:
