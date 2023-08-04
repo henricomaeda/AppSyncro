@@ -106,7 +106,7 @@ class MainWindow(CTk, WindowBaseUtils):
             self.header_frm,
             hover_color="#B22222",
             text="✕",
-            command=self.quit
+            command=self.close_window
         )
         # Response's container and its widgets.
         self.responses_frm = CTkScrollableFrame(
@@ -140,23 +140,29 @@ class MainWindow(CTk, WindowBaseUtils):
         port = self.port_ent.get().strip()
         password = self.password_ent.get().strip()
         max_connections = self.max_connections_ent.get().strip()
-        Thread(target=self.socket_server.start, args=(
-            host,
-            port,
-            password,
-            max_connections
-        )).start()
+        thread = Thread(
+            target=self.socket_server.start,
+            args=(host,
+                  port,
+                  password,
+                  max_connections))
+        thread.start()
 
     def stop_server(self) -> None:
-        Thread(target=self.socket_server.stop).start()
+        thread = Thread(target=self.socket_server.stop)
+        thread.start()
 
     def close_window(self, event: Event = None):
         try:
-            self.stop_server()
+            for client in self.socket_server.clients:
+                client.close()
+            if self.socket_server.server_socket:
+                self.socket_server.server_socket.close()
             if not event and self.winfo_exists():
-                self.destroy()
+                self.quit()
         except Exception as e:
             print(f"Failed to close window: {e}")
+            self.destroy()
 
     def handle_response(self, response: str, sender: str = "Localhost") -> None:
         sender = str(sender).strip()
