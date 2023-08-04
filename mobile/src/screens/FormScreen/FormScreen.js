@@ -51,11 +51,11 @@ const FormScreen = ({ navigation }) => {
     const connect = () => {
         const valid = validateIp() && validatePort();
         if (valid) {
-            const params = {
+            const params = JSON.stringify({
                 "serverIp": ip,
                 "serverPort": port,
                 "serverPassword": password
-            };
+            });
             navigation.push("MainScreen", params);
         };
     };
@@ -129,6 +129,7 @@ const FormScreen = ({ navigation }) => {
                         placeholder="Enter the server password if it has one."
                         placeholderTextColor={globals.colors.placeholder}
                         selectionColor={globals.colors.placeholder}
+                        secureTextEntry={true}
                         style={styles.entry}
                     />
                 </View>
