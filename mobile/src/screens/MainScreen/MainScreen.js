@@ -17,43 +17,41 @@ const MainScreen = ({ navigation, route }) => {
         serverPort: 12345,
         serverPassword: "",
     });
-    const [loading, setLoading] = useState(false);
+    const [response, setResponse] = useState("");
     const submit = useRef(console.log);
 
-    // useEffect(() => {
-    //     const navigateToHome = () => navigation.isFocused() && navigation.popToTop();
-    //     if (route.params) {
-    //         const serverData = JSON.parse(route.params);
-    //         setServerData(serverData);
+    useEffect(() => {
+        const disconnect = () => navigation.isFocused() && navigation.popToTop();
+        if (route.params) {
+            const serverData = JSON.parse(route.params);
+            setServerData(serverData);
 
-    //         const options = { host: serverData.serverIp, port: serverData.serverPort }
-    //         const client = TcpSocket.createConnection(options, () => {
-    //             const password = serverData.serverPassword.toString().trim();
-    //             if (password.length > 0) client.write(serverData.serverPassword, "utf-8");
-    //         });
+            const options = { host: serverData.serverIp, port: serverData.serverPort }
+            const client = TcpSocket.createConnection(options, () => {
+                const password = serverData.serverPassword.toString().trim();
+                if (password.length > 0) client.write(serverData.serverPassword, "utf-8");
+            });
 
-    //         client.on("data", (data) => console.log(`Received: ${data.toString()}`));
-    //         client.on("error", (error) => null);
-    //         client.on("end", () => navigateToHome());
-    //         client.on("close", () => navigateToHome());
-    //         client.on("timeout", () => navigateToHome());
+            client.on("data", (data) => setResponse(data.toString()));
+            client.on("error", (error) => null);
+            client.on("end", () => disconnect());
+            client.on("close", () => disconnect());
+            client.on("timeout", () => disconnect());
 
-    //         const sendData = (data) => {
-    //             try {
-    //                 const command = data.toString().trim();
-    //                 client.write(`${command}\n`, "utf-8");
-    //             }
-    //             catch (e) {
-    //                 navigateToHome();
-    //             }
-    //         };
-    //         submit.current = sendData;
-
-    //         setLoading(false);
-    //         return () => client.destroy();
-    //     }
-    //     else navigateToHome();
-    // }, []);
+            const sendData = (data) => {
+                try {
+                    const command = data.toString().trim();
+                    client.write(`${command}\n`, "utf-8");
+                }
+                catch (e) {
+                    disconnect();
+                };
+            };
+            submit.current = sendData;
+            return () => client.destroy();
+        }
+        else disconnect();
+    }, []);
 
 
     const [isPressed, setIsPressed] = useState(false);
@@ -79,7 +77,7 @@ const MainScreen = ({ navigation, route }) => {
         })
     ).current;
 
-    if (!loading) return (
+    if (response) return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>Connected with </Text>
