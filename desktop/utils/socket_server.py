@@ -83,11 +83,13 @@ class SocketServer:
                 self.running = True
                 while self.running:
                     client, address = self.server_socket.accept()
-                    executor.submit(self.handle_client,
-                                    client,
-                                    address,
-                                    password)
                     self.clients.append(client)
+                    executor.submit(
+                        self.handle_client,
+                        client,
+                        address,
+                        password
+                    )
         except (error, timeout):
             pass
         except Exception as e:
@@ -95,6 +97,7 @@ class SocketServer:
 
     def handle_client(self, client: socket, address: tuple, server_password: str) -> None:
         try:
+            self.response_handler("{}:{} has connected.".format(*address))
             if server_password:
                 password = self.retrieve_data(client)
                 if password != server_password:
@@ -104,7 +107,7 @@ class SocketServer:
             while self.running:
                 commands = self.retrieve_data(client)
                 if not commands:
-                    continue
+                    break
                 for command in commands.split("\n"):
                     command = command.strip()
                     if not command:
@@ -120,23 +123,28 @@ class SocketServer:
 
     def handle_command(self, command: str):
         try:
-            pass
+            print(command)
         except Exception as e:
             self.response_handler(f"Failed to handle command: {e}")
 
-    def stop(self) -> None:
+    def stop(self, force_stop: bool = False) -> None:
         try:
-            if not self.running:
+            if force_stop:
+                self.response_handler = lambda *arguments: None
+            elif not self.running:
                 raise RuntimeError("Server is not running!")
             self.running = False
             for client in self.clients:
+                self.send_data(client, "")
                 client.close()
-                del self.clients[client]
+                self.clients.pop(0)
             if self.server_socket:
                 self.server_socket.close()
             self.server_socket = None
-            self.response_handler("Server isn't listening anymore.")
+            if not force_stop:
+                self.response_handler("Server isn't listening anymore.")
         except (error, timeout):
             pass
         except Exception as e:
-            self.response_handler(f"Unable to stop server: {e}")
+            if not force_stop:
+                self.response_handler(f"Unable to stop server: {e}")

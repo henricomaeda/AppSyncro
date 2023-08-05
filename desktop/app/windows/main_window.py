@@ -8,13 +8,13 @@ from customtkinter import *
 from os.path import exists
 from tkinter import Event
 from PIL import Image
+from sys import exit
 
 
 class MainWindow(CTk, WindowBaseUtils):
     def __init__(self, title: str = "Main Application", **resources) -> None:
         super().__init__(fg_color="white", **resources)
         self.socket_server = SocketServer(self.handle_response)
-        self.wm_protocol("WM_DELETE_WINDOW", self.close_window)
         self.bind("<Destroy>", self.close_window)
         self.last_response = None
         self.title(title.strip())
@@ -154,15 +154,10 @@ class MainWindow(CTk, WindowBaseUtils):
 
     def close_window(self, event: Event = None):
         try:
-            for client in self.socket_server.clients:
-                client.close()
-            if self.socket_server.server_socket:
-                self.socket_server.server_socket.close()
-            if not event and self.winfo_exists():
-                self.quit()
-        except Exception as e:
-            print(f"Failed to close window: {e}")
-            self.destroy()
+            self.socket_server.stop(force_stop=True)
+            self.quit()
+        finally:
+            exit(0)
 
     def handle_response(self, response: str, sender: str = "Localhost") -> None:
         sender = str(sender).strip()
