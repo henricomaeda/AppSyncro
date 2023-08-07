@@ -1,5 +1,6 @@
 from socket import socket, error, timeout, SOCK_STREAM, SOCK_DGRAM, AF_INET
 from concurrent.futures import ThreadPoolExecutor
+from .process_system import *
 from random import randint
 from re import match
 import pyautogui
@@ -112,7 +113,7 @@ class SocketServer:
                     command = command.strip()
                     if not command:
                         continue
-                    self.handle_command(command)
+                    self.handle_command(command, address)
         except (error, timeout):
             pass
         except Exception as e:
@@ -121,9 +122,36 @@ class SocketServer:
             client.close()
             self.response_handler("{}:{} was disconnected.".format(*address))
 
-    def handle_command(self, command: str):
+    def handle_command(self, command: str, address: tuple):
         try:
-            print(command)
+            commands = {
+                "LC": pyautogui.leftClick,
+                "HLC": lambda: pyautogui.mouseDown(button="left"),
+                "MC": pyautogui.middleClick,
+                "HMC": lambda: pyautogui.mouseDown(button="middle"),
+                "RC": pyautogui.rightClick,
+                "HRC": lambda: pyautogui.mouseDown(button="right"),
+                "ST": lambda: pyautogui.scroll(100),
+                "SB": lambda: pyautogui.scroll(-100),
+                "BS": lambda: pyautogui.press("backspace"),
+                "ENT": lambda: pyautogui.press("enter"),
+                "ESC": lambda: pyautogui.press("esc"),
+                "VUP": increase_volume,
+                "VDOWN": decrease_volume,
+                "LS": lock_screen,
+                "HBNT": hibernate_system
+            }
+            if " MM " in command:
+                x_rel, y_rel = map(int, command.split(" MM "))
+                pyautogui.moveRel(x_rel, y_rel)
+            elif "WRITE " in command:
+                message = str(command.split("WRITE ")[1])
+                pyautogui.typewrite(message.strip(), interval=0.01)
+            elif isinstance(commands[command], function):
+                commands[command]()
+            else:
+                return
+            self.response_handler(command, "{}:{}".format(*address))
         except Exception as e:
             self.response_handler(f"Failed to handle command: {e}")
 
