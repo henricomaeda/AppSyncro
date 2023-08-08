@@ -2,9 +2,8 @@ import { PanResponder, Image } from "react-native";
 import React, { useRef, useState } from "react";
 import styles from "./KeyButtonStyles";
 
-const KeyButton = ({ sourcePath, onPress = () => null }) => {
+const KeyButton = ({ sourcePath, onHold = () => null, onRelease = () => null }) => {
     const [isPressed, setIsPressed] = useState(false);
-    const intervalRef = useRef(null);
 
     const panResponder = useRef(
         PanResponder.create({
@@ -12,12 +11,12 @@ const KeyButton = ({ sourcePath, onPress = () => null }) => {
             onMoveShouldSetPanResponder: () => true,
             onPanResponderGrant: (event, gestureState) => {
                 setIsPressed(true);
-                intervalRef.current = setInterval(onPress, 60);
+                onHold();
             },
             onPanResponderRelease: () => {
-                clearInterval(intervalRef.current);
                 setIsPressed(false);
-            },
+                onRelease();
+            }
         })
     ).current;
 
