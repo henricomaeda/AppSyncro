@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import LinearGradient from "react-native-linear-gradient";
 import TcpSocket from "react-native-tcp-socket";
+import { globals } from "../../Globals";
 import {
     ActivityIndicator,
     TouchableOpacity,
@@ -12,17 +13,18 @@ import {
     Text,
     TextInput
 } from "react-native";
-import { globals } from "../../Globals";
 import styles from "./MainScreenStyles";
+import KeyButton from "../../components/KeyButton/KeyButton";
 
 const MainScreen = ({ navigation, route }) => {
+    const [response, setResponse] = useState("");
+    const [keyboard, setKeyboard] = useState("");
+    const [replace, setReplace] = useState(false);
     const [{ serverIp, serverPort, serverPassword }, setServerData] = useState({
         serverIp: "127.0.0.1",
         serverPort: 12345,
         serverPassword: "",
     });
-    const [response, setResponse] = useState("Development");
-    const [keyboard, setKeyboard] = useState("");
     const submit = useRef(console.log);
 
     useEffect(() => {
@@ -72,7 +74,7 @@ const MainScreen = ({ navigation, route }) => {
                     const dx = Math.max(Math.min((moveX - gestureState.x0), 120), -120);
                     const dy = Math.max(Math.min((moveY - gestureState.y0), 120), -120);
                     submit.current(`${Math.round(dx / 6)} MM ${Math.round(dy / 6)}`);
-                }, 100);
+                }, 60);
             },
             onPanResponderRelease: () => {
                 clearInterval(intervalRef.current);
@@ -104,38 +106,77 @@ const MainScreen = ({ navigation, route }) => {
                     </Text>
                 </View>
                 <View style={styles.buttonsContainer}>
-                    <TouchableOpacity onPress={() => submit.current("SEL")} style={styles.button}>
-                        <Image style={styles.buttonImage} source={require("../../assets/images/select.png")} />
-                        <Text style={styles.buttonText}>Select all</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => submit.current("CP")} style={styles.button}>
-                        <Image style={styles.buttonImage} source={require("../../assets/images/copy.png")} />
-                        <Text style={styles.buttonText}>Copy</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => submit.current("PST")} style={styles.button}>
-                        <Image style={styles.buttonImage} source={require("../../assets/images/paste.png")} />
-                        <Text style={styles.buttonText}>Paste</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => submit.current("ESC")} style={styles.button}>
-                        <Image style={styles.buttonImage} source={require("../../assets/images/esc.png")} />
-                        <Text style={styles.buttonText}>Press Esc</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => submit.current("LS")} style={styles.button}>
-                        <Image style={styles.buttonImage} source={require("../../assets/images/lock.png")} />
-                        <Text style={styles.buttonText}>Lock it</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => submit.current("INC")} style={styles.button}>
-                        <Image style={styles.buttonImage} source={require("../../assets/images/increase.png")} />
-                        <Text style={styles.buttonText}>Increase</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => submit.current("DEC")} style={styles.button}>
-                        <Image style={styles.buttonImage} source={require("../../assets/images/decrease.png")} />
-                        <Text style={styles.buttonText}>Decrease</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => submit.current("HBNT")} style={styles.button}>
-                        <Image style={styles.buttonImage} source={require("../../assets/images/hibernate.png")} />
-                        <Text style={styles.buttonText}>Hibernate</Text>
-                    </TouchableOpacity>
+                    {replace ? (
+                        <>
+                            <KeyButton
+                                sourcePath={require("../../assets/images/Q.png")}
+                                onPress={() => submit.current("Q")}
+                            />
+                            <KeyButton
+                                sourcePath={require("../../assets/images/W.png")}
+                                onPress={() => submit.current("W")}
+                            />
+                            <KeyButton
+                                sourcePath={require("../../assets/images/E.png")}
+                                onPress={() => submit.current("E")}
+                            />
+                            <KeyButton
+                                sourcePath={require("../../assets/images/R.png")}
+                                onPress={() => submit.current("R")}
+                            />
+                            <KeyButton
+                                sourcePath={require("../../assets/images/A.png")}
+                                onPress={() => submit.current("A")}
+                            />
+                            <KeyButton
+                                sourcePath={require("../../assets/images/S.png")}
+                                onPress={() => submit.current("S")}
+                            />
+                            <KeyButton
+                                sourcePath={require("../../assets/images/D.png")}
+                                onPress={() => submit.current("D")}
+                            />
+                            <KeyButton
+                                sourcePath={require("../../assets/images/F.png")}
+                                onPress={() => submit.current("F")}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <TouchableOpacity onPress={() => submit.current("SEL")} style={styles.button}>
+                                <Image style={styles.buttonImage} source={require("../../assets/images/select.png")} />
+                                <Text style={styles.buttonText}>Select all</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => submit.current("CP")} style={styles.button}>
+                                <Image style={styles.buttonImage} source={require("../../assets/images/copy.png")} />
+                                <Text style={styles.buttonText}>Copy</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => submit.current("PST")} style={styles.button}>
+                                <Image style={styles.buttonImage} source={require("../../assets/images/paste.png")} />
+                                <Text style={styles.buttonText}>Paste</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => submit.current("ESC")} style={styles.button}>
+                                <Image style={styles.buttonImage} source={require("../../assets/images/esc.png")} />
+                                <Text style={styles.buttonText}>Press Esc</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => submit.current("LS")} style={styles.button}>
+                                <Image style={styles.buttonImage} source={require("../../assets/images/lock.png")} />
+                                <Text style={styles.buttonText}>Lock it</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => submit.current("INC")} style={styles.button}>
+                                <Image style={styles.buttonImage} source={require("../../assets/images/increase.png")} />
+                                <Text style={styles.buttonText}>Increase</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => submit.current("DEC")} style={styles.button}>
+                                <Image style={styles.buttonImage} source={require("../../assets/images/decrease.png")} />
+                                <Text style={styles.buttonText}>Decrease</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => submit.current("HBNT")} style={styles.button}>
+                                <Image style={styles.buttonImage} source={require("../../assets/images/hibernate.png")} />
+                                <Text style={styles.buttonText}>Hibernate</Text>
+                            </TouchableOpacity>
+                        </>
+                    )}
                 </View>
                 <TextInput
                     value={keyboard}
@@ -292,6 +333,12 @@ const MainScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
+            <TouchableOpacity onPress={() => setReplace(!replace)}>
+                <Image
+                    source={require("../../assets/images/replace.png")}
+                    style={styles.replaceButton}
+                />
+            </TouchableOpacity>
         </View>
     )
     else return (
