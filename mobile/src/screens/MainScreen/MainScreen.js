@@ -7,7 +7,6 @@ import {
     ActivityIndicator,
     TouchableOpacity,
     PanResponder,
-    ScrollView,
     Image,
     View,
     Text,
@@ -17,22 +16,15 @@ import styles from "./MainScreenStyles";
 import KeyButton from "../../components/KeyButton/KeyButton";
 
 const MainScreen = ({ navigation, route }) => {
+    const [replace, setReplace] = useState(false);
     const [response, setResponse] = useState("");
     const [keyboard, setKeyboard] = useState("");
-    const [replace, setReplace] = useState(false);
-    const [{ serverIp, serverPort, serverPassword }, setServerData] = useState({
-        serverIp: "127.0.0.1",
-        serverPort: 12345,
-        serverPassword: "",
-    });
     const submit = useRef(console.log);
 
     useEffect(() => {
         const disconnect = () => navigation.isFocused() && navigation.popToTop();
         if (route.params) {
             const serverData = JSON.parse(route.params);
-            setServerData(serverData);
-
             const options = { host: serverData.serverIp, port: serverData.serverPort }
             const client = TcpSocket.createConnection(options, () => {
                 const password = serverData.serverPassword.toString().trim();
@@ -71,10 +63,10 @@ const MainScreen = ({ navigation, route }) => {
                 intervalRef.current = setInterval(() => {
                     const moveX = gestureState.moveX !== 0 ? gestureState.moveX : gestureState.x0;
                     const moveY = gestureState.moveY !== 0 ? gestureState.moveY : gestureState.y0;
-                    const dx = Math.max(Math.min((moveX - gestureState.x0), 120), -120);
-                    const dy = Math.max(Math.min((moveY - gestureState.y0), 120), -120);
-                    submit.current(`${Math.round(dx / 6)} MM ${Math.round(dy / 6)}`);
-                }, 60);
+                    const dx = Math.max(Math.min((moveX - gestureState.x0), 260), -260);
+                    const dy = Math.max(Math.min((moveY - gestureState.y0), 260), -260);
+                    submit.current(`${Math.round(dx / 10)} MM ${Math.round(dy / 10)}`);
+                }, 80);
             },
             onPanResponderRelease: () => {
                 clearInterval(intervalRef.current);
@@ -92,53 +84,49 @@ const MainScreen = ({ navigation, route }) => {
                 pointerEvents="none"
                 style={styles.backgroundCircle}
             />
-            <ScrollView
-                keyboardDismissMode="on-drag"
-                contentContainerStyle={styles.container}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>Connected with </Text>
-                    <Text
-                        style={[
-                            styles.title,
-                            { color: globals.colors.primary }
-                        ]}>
-                        {serverIp}:{"***" + serverPort.toString().slice(3)}
-                    </Text>
-                </View>
+            <View style={styles.container}>
                 <View style={styles.buttonsContainer}>
                     {replace ? (
                         <>
                             <KeyButton
                                 sourcePath={require("../../assets/images/Q.png")}
-                                onPress={() => submit.current("Q")}
+                                onHold={() => submit.current("KD Q")}
+                                onRelease={() => submit.current("KU Q")}
                             />
                             <KeyButton
                                 sourcePath={require("../../assets/images/W.png")}
-                                onPress={() => submit.current("W")}
+                                onHold={() => submit.current("KD W")}
+                                onRelease={() => submit.current("KU W")}
                             />
                             <KeyButton
                                 sourcePath={require("../../assets/images/E.png")}
-                                onPress={() => submit.current("E")}
+                                onHold={() => submit.current("KD E")}
+                                onRelease={() => submit.current("KU E")}
                             />
                             <KeyButton
                                 sourcePath={require("../../assets/images/R.png")}
-                                onPress={() => submit.current("R")}
+                                onHold={() => submit.current("KD R")}
+                                onRelease={() => submit.current("KU R")}
                             />
                             <KeyButton
                                 sourcePath={require("../../assets/images/A.png")}
-                                onPress={() => submit.current("A")}
+                                onHold={() => submit.current("KD R")}
+                                onRelease={() => submit.current("KU R")}
                             />
                             <KeyButton
                                 sourcePath={require("../../assets/images/S.png")}
-                                onPress={() => submit.current("S")}
+                                onHold={() => submit.current("KD S")}
+                                onRelease={() => submit.current("KU S")}
                             />
                             <KeyButton
                                 sourcePath={require("../../assets/images/D.png")}
-                                onPress={() => submit.current("D")}
+                                onHold={() => submit.current("KD D")}
+                                onRelease={() => submit.current("KU D")}
                             />
                             <KeyButton
                                 sourcePath={require("../../assets/images/F.png")}
-                                onPress={() => submit.current("F")}
+                                onHold={() => submit.current("KD F")}
+                                onRelease={() => submit.current("KU F")}
                             />
                         </>
                     ) : (
@@ -285,7 +273,7 @@ const MainScreen = ({ navigation, route }) => {
                     <View
                         style={{
                             marginHorizontal: globals.window.width / 42,
-                            height: globals.window.width / 6,
+                            height: globals.window.width / 5.2,
                             flex: 1
                         }}>
                         <TouchableOpacity
@@ -332,11 +320,13 @@ const MainScreen = ({ navigation, route }) => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-            </ScrollView>
-            <TouchableOpacity onPress={() => setReplace(!replace)}>
+            </View>
+            <TouchableOpacity
+                onPress={() => setReplace(!replace)}
+                style={styles.replaceButton}>
                 <Image
                     source={require("../../assets/images/replace.png")}
-                    style={styles.replaceButton}
+                    style={styles.replaceButtonImage}
                 />
             </TouchableOpacity>
         </View>
