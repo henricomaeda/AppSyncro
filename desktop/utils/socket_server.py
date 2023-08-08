@@ -4,6 +4,7 @@ from types import FunctionType
 from .process_system import *
 from random import randint
 from re import match
+import pyperclip
 import pyautogui
 
 BUFFER_SIZE = 1024
@@ -132,8 +133,8 @@ class SocketServer:
                 "HMC": lambda: pyautogui.mouseDown(button="middle"),
                 "RC": pyautogui.rightClick,
                 "HRC": lambda: pyautogui.mouseDown(button="right"),
-                "ST": lambda: pyautogui.scroll(100),
-                "SB": lambda: pyautogui.scroll(-100),
+                "SU": lambda: pyautogui.scroll(100),
+                "SD": lambda: pyautogui.scroll(-100),
                 "BSP": lambda: pyautogui.press("backspace"),
                 "ENT": lambda: pyautogui.press("enter"),
                 "ESC": lambda: pyautogui.press("esc"),
@@ -141,20 +142,22 @@ class SocketServer:
                 "DEC": decrease_volume,
                 "LS": lock_screen,
                 "HBNT": hibernate_system,
-                "SEL": pyautogui.hotkey("ctrl", "a"),
-                "CP": pyautogui.hotkey("ctrl", "c"),
-                "PST": pyautogui.hotkey("ctrl", "v")
+                "SEL": lambda: pyautogui.hotkey("ctrl", "a"),
+                "CP": lambda: pyautogui.hotkey("ctrl", "c"),
+                "PST": lambda: pyautogui.hotkey("ctrl", "v")
             }
             if " MM " in command:
                 x_rel, y_rel = map(int, command.split(" MM "))
                 pyautogui.moveRel(x_rel, y_rel)
             elif "WRT " in command:
                 message = str(command.split("WRT ")[1])
-                pyautogui.typewrite(message.strip(), interval=0.01)
+                pyperclip.copy(message.strip())
+                pyautogui.hotkey("ctrl", "v")
+                pyperclip.copy("")
             elif command in commands and isinstance(commands[command], FunctionType):
                 commands[command]()
             else:
-                return self.response_handler(f"Unknown command: {command}", "{}:{}".format(*address))
+                return print(f"Unknown command: {command}")
             self.response_handler(command, "{}:{}".format(*address))
         except Exception as e:
             self.response_handler(f"Failed to handle command: {e}")
