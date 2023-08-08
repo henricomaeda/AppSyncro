@@ -1,6 +1,7 @@
 import Icon from "react-native-vector-icons/MaterialIcons";
 import LinearGradient from "react-native-linear-gradient";
 import React, { useState } from "react";
+import { globals } from "../../Globals";
 import {
     TouchableOpacity,
     ScrollView,
@@ -9,7 +10,6 @@ import {
     View,
     Text
 } from "react-native";
-import { globals } from "../../Globals";
 import styles from "./FormScreenStyles";
 import Exception from "../../components/Exception/Exception";
 
