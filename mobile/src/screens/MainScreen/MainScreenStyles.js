@@ -13,15 +13,9 @@ const styles = StyleSheet.create({
         opacity: 0.5
     },
     "container": {
-        padding: globals.window.width / 12,
+        paddingHorizontal: globals.window.width / 12,
         justifyContent: "center",
-        flexGrow: 1
-    },
-    "titleContainer": {
-        marginBottom: globals.window.width / 20,
-        flexDirection: "row",
-        alignSelf: "center",
-        elevation: 10
+        flex: 1
     },
     "buttonsContainer": {
         backgroundColor: globals.colors.midground,
@@ -48,11 +42,6 @@ const styles = StyleSheet.create({
         color: globals.colors.tint,
         textAlign: "center"
     },
-    "title": {
-        fontSize: globals.window.width / 22,
-        color: globals.colors.tint,
-        fontWeight: "bold"
-    },
     "label": {
         fontSize: globals.window.width / 28,
         color: globals.colors.placeholder,
@@ -63,10 +52,11 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: globals.window.width / 26,
         paddingHorizontal: globals.window.width / 26,
         backgroundColor: globals.colors.foreground,
-        marginTop: globals.window.width / 20
+        marginTop: globals.window.width / 42,
+        color: globals.colors.tint
     },
     "keyboardButtons": {
-        marginBottom: globals.window.width / 20,
+        marginBottom: globals.window.width / 42,
         flexDirection: "row"
     },
     "keyboardButton": {
@@ -90,6 +80,11 @@ const styles = StyleSheet.create({
         width: globals.window.width / 8,
         position: "absolute",
         elevation: 6,
+        zIndex: 100
+    },
+    "replaceButtonImage": {
+        height: "100%",
+        width: "100%"
     }
 });
 
