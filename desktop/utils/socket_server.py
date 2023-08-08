@@ -1,5 +1,6 @@
 from socket import socket, error, timeout, SOCK_STREAM, SOCK_DGRAM, AF_INET
 from concurrent.futures import ThreadPoolExecutor
+from types import FunctionType
 from .process_system import *
 from random import randint
 from re import match
@@ -133,24 +134,27 @@ class SocketServer:
                 "HRC": lambda: pyautogui.mouseDown(button="right"),
                 "ST": lambda: pyautogui.scroll(100),
                 "SB": lambda: pyautogui.scroll(-100),
-                "BS": lambda: pyautogui.press("backspace"),
+                "BSP": lambda: pyautogui.press("backspace"),
                 "ENT": lambda: pyautogui.press("enter"),
                 "ESC": lambda: pyautogui.press("esc"),
-                "VUP": increase_volume,
-                "VDOWN": decrease_volume,
+                "INC": increase_volume,
+                "DEC": decrease_volume,
                 "LS": lock_screen,
-                "HBNT": hibernate_system
+                "HBNT": hibernate_system,
+                "SEL": pyautogui.hotkey("ctrl", "a"),
+                "CP": pyautogui.hotkey("ctrl", "c"),
+                "PST": pyautogui.hotkey("ctrl", "v")
             }
             if " MM " in command:
                 x_rel, y_rel = map(int, command.split(" MM "))
                 pyautogui.moveRel(x_rel, y_rel)
-            elif "WRITE " in command:
-                message = str(command.split("WRITE ")[1])
+            elif "WRT " in command:
+                message = str(command.split("WRT ")[1])
                 pyautogui.typewrite(message.strip(), interval=0.01)
-            elif isinstance(commands[command], function):
+            elif command in commands and isinstance(commands[command], FunctionType):
                 commands[command]()
             else:
-                return
+                return self.response_handler(f"Unknown command: {command}", "{}:{}".format(*address))
             self.response_handler(command, "{}:{}".format(*address))
         except Exception as e:
             self.response_handler(f"Failed to handle command: {e}")
