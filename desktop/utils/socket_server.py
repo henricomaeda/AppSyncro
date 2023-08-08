@@ -7,6 +7,10 @@ from re import match
 import pyperclip
 import pyautogui
 
+pyautogui.PAUSE = 0.0
+pyautogui.FAILSAFE = False
+pyautogui.MINIMUM_SLEEP = 0.0
+pyautogui.MINIMUM_DURATION = 0.0
 BUFFER_SIZE = 1024
 
 
@@ -153,12 +157,16 @@ class SocketServer:
                 message = str(command.split("WRT ")[1])
                 pyperclip.copy(message.strip())
                 pyautogui.hotkey("ctrl", "v")
-                pyperclip.copy("")
+            elif "KD " in command:
+                key = str(command.split("KD ")[1])
+                pyautogui.keyDown(key.strip())
+            elif "KU " in command:
+                key = str(command.split("KU ")[1])
+                pyautogui.keyUp(key.strip())
             elif command in commands and isinstance(commands[command], FunctionType):
                 commands[command]()
             else:
                 return print(f"Unknown command: {command}")
-            self.response_handler(command, "{}:{}".format(*address))
         except Exception as e:
             self.response_handler(f"Failed to handle command: {e}")
 
@@ -169,13 +177,12 @@ class SocketServer:
             elif not self.running:
                 raise RuntimeError("Server is not running!")
             self.running = False
-            for client in self.clients:
-                self.send_data(client, "")
-                client.close()
-                self.clients.pop(0)
             if self.server_socket:
                 self.server_socket.close()
             self.server_socket = None
+            for client in self.clients:
+                client.close()
+                self.clients.pop(0)
             if not force_stop:
                 self.response_handler("Server isn't listening anymore.")
         except (error, timeout):
