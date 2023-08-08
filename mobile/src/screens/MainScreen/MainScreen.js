@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     PanResponder,
     ScrollView,
+    Image,
     View,
     Text,
     TextInput
@@ -91,7 +92,6 @@ const MainScreen = ({ navigation, route }) => {
             />
             <ScrollView
                 keyboardDismissMode="on-drag"
-                keyboardShouldPersistTaps={true}
                 contentContainerStyle={styles.container}>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>Connected with </Text>
@@ -102,6 +102,40 @@ const MainScreen = ({ navigation, route }) => {
                         ]}>
                         {serverIp}:{"***" + serverPort.toString().slice(3)}
                     </Text>
+                </View>
+                <View style={styles.buttonsContainer}>
+                    <TouchableOpacity onPress={() => submit.current("SEL")} style={styles.button}>
+                        <Image style={styles.buttonImage} source={require("../../assets/images/select.png")} />
+                        <Text style={styles.buttonText}>Select all</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => submit.current("CP")} style={styles.button}>
+                        <Image style={styles.buttonImage} source={require("../../assets/images/copy.png")} />
+                        <Text style={styles.buttonText}>Copy</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => submit.current("PST")} style={styles.button}>
+                        <Image style={styles.buttonImage} source={require("../../assets/images/paste.png")} />
+                        <Text style={styles.buttonText}>Paste</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => submit.current("ESC")} style={styles.button}>
+                        <Image style={styles.buttonImage} source={require("../../assets/images/esc.png")} />
+                        <Text style={styles.buttonText}>Press Esc</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => submit.current("LS")} style={styles.button}>
+                        <Image style={styles.buttonImage} source={require("../../assets/images/lock.png")} />
+                        <Text style={styles.buttonText}>Lock it</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => submit.current("INC")} style={styles.button}>
+                        <Image style={styles.buttonImage} source={require("../../assets/images/increase.png")} />
+                        <Text style={styles.buttonText}>Increase</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => submit.current("DEC")} style={styles.button}>
+                        <Image style={styles.buttonImage} source={require("../../assets/images/decrease.png")} />
+                        <Text style={styles.buttonText}>Decrease</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => submit.current("HBNT")} style={styles.button}>
+                        <Image style={styles.buttonImage} source={require("../../assets/images/hibernate.png")} />
+                        <Text style={styles.buttonText}>Hibernate</Text>
+                    </TouchableOpacity>
                 </View>
                 <TextInput
                     value={keyboard}
@@ -119,7 +153,7 @@ const MainScreen = ({ navigation, route }) => {
                             const text = keyboard.trim();
                             if (text.length > 0) {
                                 setKeyboard("");
-                                submit.current(`WRITE ${text}`);
+                                submit.current(`WRT ${text}`);
                             };
                         }}
                         style={[
@@ -139,17 +173,20 @@ const MainScreen = ({ navigation, route }) => {
                             Write it
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => submit.current("BACKSPACE")}>
+                    <TouchableOpacity onPress={() => submit.current("BSP")}>
                         <LinearGradient
                             colors={[globals.colors.secondary, globals.colors.primary]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
-                            style={styles.keyboardButton}>
+                            style={[
+                                styles.keyboardButton,
+                                { marginHorizontal: globals.window.width / 60 }
+                            ]}>
                             <Icon
                                 name="backspace"
                                 color={globals.colors.tint}
-                                size={globals.window.width / 20}
-                                style={{ marginRight: 2 }}
+                                size={globals.window.width / 22}
+                                style={{ marginRight: 3 }}
                             />
                             <Text style={styles.keyboardText}>
                                 Backspace
@@ -157,7 +194,7 @@ const MainScreen = ({ navigation, route }) => {
                         </LinearGradient>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => submit.current("ENTER")}
+                        onPress={() => submit.current("ENT")}
                         style={[
                             styles.keyboardButton,
                             {
@@ -169,7 +206,7 @@ const MainScreen = ({ navigation, route }) => {
                             name="keyboard-return"
                             color={globals.colors.tint}
                             size={globals.window.width / 20}
-                            style={{ marginTop: 2 }}
+                            style={{ marginRight: 2, marginTop: 2 }}
                         />
                         <Text style={styles.keyboardText}>
                             Enter
@@ -186,7 +223,9 @@ const MainScreen = ({ navigation, route }) => {
                         height: globals.window.width / 2,
                         justifyContent: "center",
                         alignItems: "center"
-                    }}><Text style={styles.label}>Hold to mouse movement</Text></View>
+                    }}>
+                    <Text style={styles.label}>Hold to mouse movement</Text>
+                </View>
                 <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
                     <TouchableOpacity
                         onPress={() => submit.current("LC")}
