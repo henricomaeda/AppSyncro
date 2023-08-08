@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
         top: -globals.window.width / 5,
         position: "absolute",
         elevation: 10,
-        opacity: 0.4
+        opacity: 0.5
     },
     "container": {
         padding: globals.window.width / 12,
@@ -18,8 +18,35 @@ const styles = StyleSheet.create({
         flexGrow: 1
     },
     "titleContainer": {
+        marginBottom: globals.window.width / 20,
         flexDirection: "row",
-        alignSelf: "center"
+        alignSelf: "center",
+        elevation: 10
+    },
+    "buttonsContainer": {
+        backgroundColor: globals.colors.midground,
+        borderRadius: globals.window.width / 32,
+        justifyContent: "space-between",
+        flexDirection: "row",
+        overflow: "hidden",
+        flexWrap: "wrap",
+        elevation: 2
+    },
+    "button": {
+        paddingVertical: globals.window.width / 40,
+        width: globals.window.width / 5,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    "buttonImage": {
+        height: globals.window.width / 10,
+        width: globals.window.width / 10,
+        elevation: 6
+    },
+    "buttonText": {
+        fontSize: globals.window.width / 30,
+        color: globals.colors.tint,
+        textAlign: "center"
     },
     "title": {
         fontSize: globals.window.width / 22,
@@ -27,7 +54,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     "label": {
-        fontSize: globals.window.width / 30,
+        fontSize: globals.window.width / 28,
         color: globals.colors.placeholder,
         textAlign: "center"
     },
@@ -40,7 +67,6 @@ const styles = StyleSheet.create({
     },
     "keyboardButtons": {
         marginBottom: globals.window.width / 20,
-        justifyContent: "space-between",
         flexDirection: "row"
     },
     "keyboardButton": {
@@ -49,7 +75,9 @@ const styles = StyleSheet.create({
         marginTop: globals.window.width / 62,
         justifyContent: "center",
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        elevation: 2,
+        flex: 1
     },
     "keyboardText": {
         fontSize: globals.window.width / 26,
