@@ -63,8 +63,8 @@ const MainScreen = ({ navigation, route }) => {
                 intervalRef.current = setInterval(() => {
                     const moveX = gestureState.moveX !== 0 ? gestureState.moveX : gestureState.x0;
                     const moveY = gestureState.moveY !== 0 ? gestureState.moveY : gestureState.y0;
-                    const dx = Math.max(Math.min((moveX - gestureState.x0), 260), -260);
-                    const dy = Math.max(Math.min((moveY - gestureState.y0), 260), -260);
+                    const dx = Math.max(Math.min((moveX - gestureState.x0), 310), -310);
+                    const dy = Math.max(Math.min((moveY - gestureState.y0), 310), -310);
                     submit.current(`${Math.round(dx / 10)} MM ${Math.round(dy / 10)}`);
                 }, 80);
             },

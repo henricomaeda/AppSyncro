@@ -1,4 +1,4 @@
-# uRemotePC - Version 1.0.3
+# uRemotePC - Version 1.0.4
 
 Welcome to uRemotePC, a remote desktop control application for controlling your computer from a mobile device.
 
@@ -43,11 +43,11 @@ uRemotePC is a software solution that enables you to remotely control your compu
 
 ### User Instructions
 
-1. Download the [APK installer](mobile/installer/uRemotePC_v1.0.3.apk) from the "mobile" folder.
+1. Download the [APK installer](mobile/installer/uRemotePC_v1.0.4.apk) from the "mobile" folder.
 2. Install the APK on your Android device.
 3. Launch the uRemotePC app on your mobile device.
 
-4. Download the [executable file](desktop/release/uRemotePC_v1.0.3.exe) from the "desktop" folder.
+4. Download the [executable file](desktop/release/uRemotePC_v1.0.4.exe) from the "desktop" folder.
 5. Run the executable on your Windows computer.
 6. The desktop server will start and wait for incoming connections.
 

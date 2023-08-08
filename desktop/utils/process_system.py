@@ -3,6 +3,7 @@ from comtypes import CoUninitialize, CoInitialize, CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from win32api import GetCurrentProcess, SetSystemPowerState
 from ctypes import windll, cast, POINTER
+from time import sleep
 
 
 @staticmethod
@@ -37,16 +38,17 @@ def lock_screen():
 
 
 def hibernate_system():
-    priv_flags = (TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY)
-    hToken = OpenProcessToken(GetCurrentProcess(), priv_flags)
-    priv_id = LookupPrivilegeValue(None, SE_SHUTDOWN_NAME)
-    old_privs = AdjustTokenPrivileges(
-        hToken,
-        0,
-        [(priv_id, SE_PRIVILEGE_ENABLED)]
-    )
+    sleep(0.1)
     try:
-        windll.powrprof.SetSuspendState(False, True, False)
-    except:
         SetSystemPowerState(False, True)
-    AdjustTokenPrivileges(hToken, 0, old_privs)
+    except:
+        priv_flags = (TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY)
+        hToken = OpenProcessToken(GetCurrentProcess(), priv_flags)
+        priv_id = LookupPrivilegeValue(None, SE_SHUTDOWN_NAME)
+        old_privs = AdjustTokenPrivileges(
+            hToken,
+            0,
+            [(priv_id, SE_PRIVILEGE_ENABLED)]
+        )
+        windll.powrprof.SetSuspendState(False, True, False)
+        AdjustTokenPrivileges(hToken, 0, old_privs)

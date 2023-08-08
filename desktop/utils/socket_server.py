@@ -144,8 +144,8 @@ class SocketServer:
                 "ESC": lambda: pyautogui.press("esc"),
                 "INC": increase_volume,
                 "DEC": decrease_volume,
-                "LS": lock_screen,
-                "HBNT": hibernate_system,
+                "LS": lambda: (self.stop(), lock_screen()),
+                "HBNT": lambda: (self.stop(), hibernate_system()),
                 "SEL": lambda: pyautogui.hotkey("ctrl", "a"),
                 "CP": lambda: pyautogui.hotkey("ctrl", "c"),
                 "PST": lambda: pyautogui.hotkey("ctrl", "v")
