@@ -83,6 +83,14 @@ const styles = StyleSheet.create({
         fontSize: globals.window.width / 26,
         color: globals.colors.tint
     },
+    "replaceButton": {
+        bottom: globals.window.width / 20,
+        height: globals.window.width / 8,
+        right: globals.window.width / 20,
+        width: globals.window.width / 8,
+        position: "absolute",
+        elevation: 6,
+    }
 });
 
 export default styles;
